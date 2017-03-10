@@ -1,0 +1,52 @@
+Date Time: 28-Oct-2015 04:55:10 PM
+Error no : 1054: Unknown column 'pub_detail_id' in 'where clause'
+Invalid SQL: SELECT COUNT(*) as total  
+			FROM file_upload_publication
+			WHERE (publication_id = '' 
+			AND pub_detail_id = '')
+			OR (publication_id = '' 
+			AND pub_detail_id = '')
+			AND uploaded_by = '012014030387'
+			AND archived_status IS NULL
+Source: /app/application/publication/add_publication.php
+Triggered By: 012014030387
+
+Date Time: 28-Oct-2015 05:00:01 PM
+Error no : 1054: Unknown column 'pub_detail_id' in 'where clause'
+Invalid SQL: SELECT COUNT(*) as total  
+			FROM file_upload_publication
+			WHERE (publication_id = '' 
+			AND pub_detail_id = '')
+			OR (publication_id = '' 
+			AND pub_detail_id = '')
+			AND uploaded_by = '012014030387'
+			AND archived_status IS NULL
+Source: /app/application/publication/add_publication.php
+Triggered By: 012014030387
+
+Date Time: 28-Oct-2015 05:01:20 PM
+Error no : 1054: Unknown column 'pub_detail_id' in 'where clause'
+Invalid SQL: SELECT * 
+FROM file_upload_publication
+WHERE (publication_id = '' 
+AND pub_detail_id = '')
+OR (publication_id = '' 
+AND pub_detail_id = '')
+AND uploaded_by = '012014030387'
+AND archived_status IS NULL
+Source: /app/application/publication/publication_attachment.php
+Triggered By: 012014030387
+
+Date Time: 28-Oct-2015 05:02:27 PM
+Error no : 1054: Unknown column 'pub_detail_id' in 'where clause'
+Invalid SQL: SELECT * 
+FROM file_upload_publication
+WHERE (publication_id = '' 
+AND pub_detail_id = '')
+OR (publication_id = '' 
+AND pub_detail_id = '')
+AND uploaded_by = '012014030387'
+AND archived_status IS NULL
+Source: /app/application/publication/publication_attachment.php
+Triggered By: 012014030387
+

@@ -1,0 +1,603 @@
+<?php
+//**************************************************************************************
+// Post Graduate Thesis Monitoring System v1.0.0
+// Program Name: defense_calendar.php
+//
+// Created by: Zuraimi
+// Created Date: 13-July-2015
+// Modified by: Zuraimi
+// Modified Date: 13-July-2015
+//
+//**************************************************************************************
+
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+	<link rel="stylesheet" type="text/css" href="../../../theme/css/<?php echo $css; ?>" />
+    <link rel="stylesheet" type="text/css" href="../../../theme/css/colorbox.css" media="screen" />
+   	<link rel="stylesheet" href="../../../lib/js/datePicker/jquery-ui-1.8.11.custom.css" />
+	<link rel="stylesheet" href="../../lib/js/datePicker/jquery-ui-1.8.11.custom.css" />
+	<script type="text/javascript" src="../../../lib/js/ckeditor/ckeditor.js"></script>
+	<script src="../../../lib/js/jquery.min2.js"></script>
+    <script type="text/javascript" src="../../../lib/js/datePicker/jquery-ui-1.8.11.custom.min.js"></script>
+	<script language="JavaScript" src="../../../lib/js/windowopen.js"></script>
+	<script src="../../../lib/js/jquery.colorbox.js"></script>
+</head>
+
+
+<?php
+
+include("../../../lib/common.php");
+checkLogin();
+
+session_start();
+$user_id=$_SESSION['user_id'];
+$thesis_id=$_GET['tid'];
+$proposal_id=$_GET['pid'];
+$defense_id=$_GET['did'];
+$referenceNo=$_GET['ref'];
+
+function runnum($column_name, $tblname) 
+{ 
+    global $db_klas2;
+    
+    $run_start = "001";
+    
+    $sql_slct_max = "SELECT MAX(SUBSTR($column_name,2,11)) AS run_id FROM $tblname";
+    $sql_slct = $db_klas2;
+    $sql_slct->query($sql_slct_max);
+    $sql_slct->next_record();
+
+    if($sql_slct->num_rows($sql_slct_max)== 0 || $sql_slct->f("run_id")==NULL) 
+	{
+        $run_id = date("Ymd").$run_start;
+    } 
+	else 
+	{
+        $todate = date("Ymd");
+        
+        if($todate > substr($sql_slct->f("run_id"),0,8)) 
+		{
+            $run_id = $todate.$run_start;
+        } 
+		else 
+		{
+            $run_id = $sql_slct->f("run_id") + 1; 
+        }
+    }
+    return $run_id;
+}
+
+function runnum2($column_name, $tblname) 
+{ 
+    global $db_klas2;
+    
+    $run_start = "001";
+    
+    $sql_slct_max = "SELECT MAX($column_name) AS run_id FROM $tblname";
+    $sql_slct = $db_klas2;
+    $sql_slct->query($sql_slct_max);
+    $sql_slct->next_record();
+
+    if($sql_slct->num_rows($sql_slct_max)== 0 || $sql_slct->f("run_id")==NULL) 
+	{
+        $run_id = date("Ymd").$run_start;
+    } 
+	else 
+	{
+        $todate = date("Ymd");
+        
+        if($todate > substr($sql_slct->f("run_id"),0,8)) 
+		{
+            $run_id = $todate.$run_start;
+        } 
+		else 
+		{
+            $run_id = $sql_slct->f("run_id") + 1; 
+        }
+    }
+    return $run_id;
+}
+
+				
+						
+						
+if(isset($_POST['btnAdd']) && ($_POST['btnAdd'] <> ""))
+{
+	$msg = array();
+	if (empty($_POST['add_defense_date'])) $msg[] = "<div class=\"error\"><span>Please provide <strong>Defence Proposal Start Date</strong>.</span></div>";
+	if (empty($_POST['add_defense_stime'])) $msg[] = "<div class=\"error\"><span>Please provide <strong>Defence Proposal Start Time</strong>.</span></div>";
+	if (empty($_POST['add_defense_etime'])) $msg[] = "<div class=\"error\"><span>Please provide <strong>Defence Proposal End Time</strong>.</span></div>";
+	if (empty($_POST['add_venue'])) $msg[] = "<div class=\"error\"><span>Please provide the <strong>Venue</strong> where the defense proposal will be conducted.</span></div>";
+	if (empty($_POST['add_remarks'])) $msg[] = "<div class=\"error\"><span>Please provide <strong>Remarks</strong> if any.</span></div>";
+	
+	if(empty($msg)) 
+	{
+		$myAddDefenseDate = $_POST['add_defense_date'];
+		$myAddDefenseSTime = $_POST['add_defense_stime'];
+		$myAddDefenseETime = $_POST['add_defense_etime'];
+		$myAddVenue = $_POST['add_venue'];
+		$myAddRemarks = $_POST['add_remarks'];
+		
+		$curdatetime = date("Y-m-d H:i:s");
+		$calendarId = runnum2('id','pg_defense_calendar');	
+
+		echo $sql = "INSERT INTO pg_defense_calendar(
+		id, defense_date, defense_stime, defense_etime, venue, remarks, status, insert_by, insert_date, modify_by, modify_date)
+		VALUES ('$calendarId', STR_TO_DATE('$myAddDefenseDate','%d-%M-%Y'), 
+		STR_TO_DATE('$myAddDefenseSTime','%H:%i'), STR_TO_DATE('$myAddDefenseETime','%H:%i'),
+		'$myAddVenue', '$myAddRemarks', 'A', '$user_id', '$curdatetime', '$user_id', '$curdatetime')";
+
+		$db_klas2->query($sql); 
+		
+		$msg[] = "<div class=\"success\"><span>The entry for the Defense Proposal calendar has been added successfully.</span></div>";
+	}
+}
+
+if(isset($_POST['btnUpdate']) && ($_POST['btnUpdate'] <> ""))
+{					
+	$tmpDefenseCheckBox = $_POST['defense_checkbox'];
+	$no=1;
+	while (list ($key,$val) = @each ($tmpDefenseCheckBox)) 
+	{
+		$no=$no+$val;
+		if (empty($_POST['published_date'][$val])) $msg[] = "<div class=\"error\"><span>Please provide Published Date for record no $no.</span></div>";
+		if (empty($_POST['publication_title'][$val])) $msg[] = "<div class=\"error\"><span>Please provide Publication Title for record no $no.</span></div>";
+		if (empty($_POST['publication_name'][$val])) $msg[] = "<div class=\"error\"><span>Please provide Publication Name for record no $no.</span></div>";
+		if (empty($_POST['website'][$val])) $msg[] = "<div class=\"error\"><span>Please provide the website of the publication for record no $no.</span></div>";
+	}
+	
+	if (sizeof($_POST['defense_checkbox'])>0) {
+		$curdatetime = date("Y-m-d H:i:s");
+		while (list ($key,$val) = @each ($_POST['defense_checkbox'])) 
+		{
+			$publication_id = $_POST['publication_id'][$val];
+			$published_date = $_POST['published_date'][$val];
+			$publication_title = $_POST['publication_title'][$val];
+			$publication_name = $_POST['publication_name'][$val];
+			$publication_type = $_POST['publication_type'][$val];
+			$website = $_POST['website'][$val];
+			$country = $_POST['country'][$val];
+			
+			$sql1 = "UPDATE pg_defense_publication
+			SET published_date = STR_TO_DATE('$published_date','%d-%b-%Y'), 
+			publication_title = '$publication_title',
+			publication_name = '$publication_name',
+			publication_type = '$publication_type',
+			website = '$website',
+			country_id = '$country',
+			modify_by = '$user_id', modify_date = '$curdatetime'
+			WHERE id = '$publication_id'
+			AND student_matrix_no = '$user_id'";
+			
+			$dba->query($sql1); 
+			
+			
+		}
+		$msg[] = "<div class=\"success\"><span>The selected Publication detail has been updated successfully.</span></div>";
+	}
+	else {
+		$msg[] = "<div class=\"error\"><span>Please tick which Publication record to update!</span></div>";
+	}
+	unset($_POST);
+}
+
+if(isset($_POST['btnDelete']) && ($_POST['btnDelete'] <> ""))
+{					
+	if (sizeof($_POST['defense_checkbox'])>0) {
+		$curdatetime = date("Y-m-d H:i:s");
+		while (list ($key,$val) = @each ($_POST['defense_checkbox'])) 
+		{
+			$publication_id = $_POST['publication_id'][$val];
+			
+			$sql1 = "DELETE FROM pg_defense_publication
+			WHERE id = '$publication_id'
+			AND student_matrix_no = '$user_id'";
+			
+			$dba->query($sql1); 
+			
+			
+		}
+		$msg[] = "<div class=\"success\"><span>The selected Publication detail has been deleted successfully.</span></div>";
+	}
+	else {
+		$msg[] = "<div class=\"error\"><span>Please tick which Publication record to delete!</span></div>";
+	}
+	unset($_POST);
+}
+
+		
+		
+$sql1="SELECT id, DATE_FORMAT(defense_date,'%d-%b-%Y') as defense_date, 
+defense_stime, defense_etime, venue, remarks
+FROM  pg_defense_calendar
+WHERE status = 'A'
+AND archived_status IS NULL";
+
+$result_sql1 = $db->query($sql1); 
+$row_cnt = mysql_num_rows($result_sql1);
+?>	
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Untitled Document</title>
+	<link rel="stylesheet" type="text/css" href="../../../theme/css/<?php echo $css; ?>" />
+    <link rel="stylesheet" type="text/css" href="../../../theme/css/colorbox.css" media="screen" />
+   	<link rel="stylesheet" href="../../../lib/js/datePicker/jquery-ui-1.8.11.custom.css" />
+	<link rel="stylesheet" href="../../lib/js/datePicker/jquery-ui-1.8.11.custom.css" />
+	<script type="text/javascript" src="../../../lib/js/ckeditor/ckeditor.js"></script>
+	<script src="../../../lib/js/jquery.min2.js"></script>
+    <script type="text/javascript" src="../../../lib/js/datePicker/jquery-ui-1.8.11.custom.min.js"></script>
+	<script language="JavaScript" src="../../../lib/js/windowopen.js"></script>
+	<script src="../../../lib/js/jquery.colorbox.js"></script>
+</head>
+<body>
+<script>
+  
+		$(document).ready(function(){
+              
+              
+               $(".select_student").colorbox({width:"80%", height:"90%", iframe:true,          
+               onClosed:function(){ 
+                                
+                } }); 
+			   $(".select").colorbox({width:"100%", height:"90%", iframe:true,          
+               onClosed:function(){ 
+                                
+                } }); 
+          });
+	</script>
+	<script>
+function iframecode(url, w, h) {
+				//alert("111");
+				window.parent.$.colorbox({href:url, iframe: true, scrolling: false, width: w, height: h});
+			}
+//$(".forgot").colorbox({ bottom: "65px", width:"70%", height:"75%", iframe:true, onClosed:function(){} }); 
+</script>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function respConfirm () {
+    var confirmSubmit = confirm("Click OK if you confirm to delete else click Cancel to stay on the same page.");
+	if (confirmSubmit==true)
+	{
+		return saveStatus;
+	}
+	if (confirmSubmit==false)
+	{
+		return false;
+	}
+}
+
+</SCRIPT>
+<script>
+$(function() {
+	$( "#datepickerFirst" ).datepicker({
+		changeMonth: true,
+		changeYear: true,
+		yearRange: '-100:+0',
+		dateFormat: 'dd-mm-yy'
+		});
+});
+</script>
+
+ <?php
+    if(!empty($msg)) 
+	{
+        foreach($msg as $err) 
+		{
+            echo $err;
+        }
+    }
+?>
+
+  <form id="form1" name="form1" method="post" enctype="multipart/form-data" onsubmit="return saveRec();">
+
+	 <fieldset>
+		<legend><strong>Defence Calendar Setup</strong></legend>
+
+		<?php ?> <p>
+		<table>
+			<tr>
+				<td><label>Defence Proposal Date <span style="color:#FF0000">*</span></label></td>
+				<td><input name="add_defense_date" type="text" id="add_defense_date" size="10" value="<?=$_POST['add_defense_date']?>"readonly=""></td>
+				<?	$jscript .= "\n" . '$( "#add_defense_date" ).datepicker({
+												changeMonth: true,
+												changeYear: true,
+												yearRange: \'-100:+0\',
+												dateFormat: \'dd-M-yy\'
+											});';
+					 
+				?>
+			</tr>
+			<tr>
+				<td><label>Defence Proposal Start Time <span style="color:#FF0000">*</span></label></td>
+				<td><select name="add_defense_stime" id="add_defense_stime">
+				<option value="" selected = "selected">Select Time</option>				
+				<?if ($_POST['add_defense_stime'] == "07:00") {?><option value="07:00" selected = "selected">07:00 AM</option><?} else {?><option value="07:00">07:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "07:30") {?><option value="07:30" selected = "selected">07:30 AM</option><?} else {?><option value="07:30">07:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "08:00") {?><option value="08:00" selected = "selected">08:00 AM</option><?} else {?><option value="08:00">08:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "08:30") {?><option value="08:30" selected = "selected">08:30 AM</option><?} else {?><option value="08:30">08:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "09:00") {?><option value="09:00" selected = "selected">09:00 AM</option><?} else {?><option value="09:00">09:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "09:30") {?><option value="09:30" selected = "selected">09:30 AM</option><?} else {?><option value="09:30">09:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "10:00") {?><option value="10:00" selected = "selected">10:00 AM</option><?} else {?><option value="10:00">10:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "10:30") {?><option value="10:30" selected = "selected">10:30 AM</option><?} else {?><option value="10:30">10:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "11:00") {?><option value="11:00" selected = "selected">11:00 AM</option><?} else {?><option value="11:00">11:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "11:30") {?><option value="11:30" selected = "selected">11:30 AM</option><?} else {?><option value="11:30">11:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "12:00") {?><option value="12:00" selected = "selected">12:00 PM</option><?} else {?><option value="12:00">12:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "12:30") {?><option value="12:30" selected = "selected">12:30 PM</option><?} else {?><option value="12:30">12:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "13:00") {?><option value="13:00" selected = "selected">01:00 PM</option><?} else {?><option value="13:00">01:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "13:30") {?><option value="13:30" selected = "selected">01:30 PM</option><?} else {?><option value="13:30">01:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "14:00") {?><option value="14:00" selected = "selected">02:00 PM</option><?} else {?><option value="14:00">02:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "14:30") {?><option value="14:30" selected = "selected">02:30 PM</option><?} else {?><option value="14:30">02:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "15:00") {?><option value="15:00" selected = "selected">03:00 PM</option><?} else {?><option value="15:00">03:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "15:30") {?><option value="15:30" selected = "selected">03:30 PM</option><?} else {?><option value="15:30">03:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "16:00") {?><option value="16:00" selected = "selected">04:00 PM</option><?} else {?><option value="16:00">04:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "16:30") {?><option value="16:30" selected = "selected">04:30 PM</option><?} else {?><option value="16:30">04:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "17:00") {?><option value="17:00" selected = "selected">05:00 PM</option><?} else {?><option value="17:00">05:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "17:30") {?><option value="17:30" selected = "selected">05:30 PM</option><?} else {?><option value="17:30">05:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "18:00") {?><option value="18:00" selected = "selected">06:00 PM</option><?} else {?><option value="18:00">06:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "18:30") {?><option value="18:30" selected = "selected">06:30 PM</option><?} else {?><option value="18:30">06:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "19:00") {?><option value="19:00" selected = "selected">07:00 PM</option><?} else {?><option value="19:00">07:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "19:30") {?><option value="19:30" selected = "selected">07:30 PM</option><?} else {?><option value="19:30">07:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "20:00") {?><option value="20:00" selected = "selected">08:00 PM</option><?} else {?><option value="20:00">08:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "20:30") {?><option value="20:30" selected = "selected">08:30 PM</option><?} else {?><option value="20:30">08:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "21:00") {?><option value="21:00" selected = "selected">09:00 PM</option><?} else {?><option value="21:00">09:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "21:30") {?><option value="21:30" selected = "selected">09:30 PM</option><?} else {?><option value="21:30">09:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "22:00") {?><option value="22:00" selected = "selected">10:00 PM</option><?} else {?><option value="22:00">10:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "22:30") {?><option value="22:30" selected = "selected">10:30 PM</option><?} else {?><option value="22:30">10:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "23:00") {?><option value="23:00" selected = "selected">11:00 PM</option><?} else {?><option value="23:00">11:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "23:30") {?><option value="23:30" selected = "selected">11:30 PM</option><?} else {?><option value="23:30">11:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_stime'] == "00:00") {?><option value="00:00" selected = "selected">12:00 AM</option><?} else {?><option value="00:00">12:00 AM</option><?}?>																											
+				</select></td>
+			</tr>
+			<tr>
+				<td><label>Defece Proposal  End Time <span style="color:#FF0000">*</span></label></td>				
+				<td><select name="add_defense_etime" id="add_defense_etime">
+				<option value="" selected = "selected">Select Time</option>				
+				<?if ($_POST['add_defense_etime'] == "07:00") {?><option value="07:00" selected = "selected">07:00 AM</option><?} else {?><option value="07:00">07:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "07:30") {?><option value="07:30" selected = "selected">07:30 AM</option><?} else {?><option value="07:30">07:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "08:00") {?><option value="08:00" selected = "selected">08:00 AM</option><?} else {?><option value="08:00">08:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "08:30") {?><option value="08:30" selected = "selected">08:30 AM</option><?} else {?><option value="08:30">08:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "09:00") {?><option value="09:00" selected = "selected">09:00 AM</option><?} else {?><option value="09:00">09:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "09:30") {?><option value="09:30" selected = "selected">09:30 AM</option><?} else {?><option value="09:30">09:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "10:00") {?><option value="10:00" selected = "selected">10:00 AM</option><?} else {?><option value="10:00">10:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "10:30") {?><option value="10:30" selected = "selected">10:30 AM</option><?} else {?><option value="10:30">10:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "11:00") {?><option value="11:00" selected = "selected">11:00 AM</option><?} else {?><option value="11:00">11:00 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "11:30") {?><option value="11:30" selected = "selected">11:30 AM</option><?} else {?><option value="11:30">11:30 AM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "12:00") {?><option value="12:00" selected = "selected">12:00 PM</option><?} else {?><option value="12:00">12:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "12:30") {?><option value="12:30" selected = "selected">12:30 PM</option><?} else {?><option value="12:30">12:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "13:00") {?><option value="13:00" selected = "selected">01:00 PM</option><?} else {?><option value="13:00">01:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "13:30") {?><option value="13:30" selected = "selected">01:30 PM</option><?} else {?><option value="13:30">01:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "14:00") {?><option value="14:00" selected = "selected">02:00 PM</option><?} else {?><option value="14:00">02:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "14:30") {?><option value="14:30" selected = "selected">02:30 PM</option><?} else {?><option value="14:30">02:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "15:00") {?><option value="15:00" selected = "selected">03:00 PM</option><?} else {?><option value="15:00">03:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "15:30") {?><option value="15:30" selected = "selected">03:30 PM</option><?} else {?><option value="15:30">03:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "16:00") {?><option value="16:00" selected = "selected">04:00 PM</option><?} else {?><option value="16:00">04:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "16:30") {?><option value="16:30" selected = "selected">04:30 PM</option><?} else {?><option value="16:30">04:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "17:00") {?><option value="17:00" selected = "selected">05:00 PM</option><?} else {?><option value="17:00">05:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "17:30") {?><option value="17:30" selected = "selected">05:30 PM</option><?} else {?><option value="17:30">05:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "18:00") {?><option value="18:00" selected = "selected">06:00 PM</option><?} else {?><option value="18:00">06:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "18:30") {?><option value="18:30" selected = "selected">06:30 PM</option><?} else {?><option value="18:30">06:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "19:00") {?><option value="19:00" selected = "selected">07:00 PM</option><?} else {?><option value="19:00">07:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "19:30") {?><option value="19:30" selected = "selected">07:30 PM</option><?} else {?><option value="19:30">07:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "20:00") {?><option value="20:00" selected = "selected">08:00 PM</option><?} else {?><option value="20:00">08:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "20:30") {?><option value="20:30" selected = "selected">08:30 PM</option><?} else {?><option value="20:30">08:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "21:00") {?><option value="21:00" selected = "selected">09:00 PM</option><?} else {?><option value="21:00">09:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "21:30") {?><option value="21:30" selected = "selected">09:30 PM</option><?} else {?><option value="21:30">09:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "22:00") {?><option value="22:00" selected = "selected">10:00 PM</option><?} else {?><option value="22:00">10:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "22:30") {?><option value="22:30" selected = "selected">10:30 PM</option><?} else {?><option value="22:30">10:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "23:00") {?><option value="23:00" selected = "selected">11:00 PM</option><?} else {?><option value="23:00">11:00 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "23:30") {?><option value="23:30" selected = "selected">11:30 PM</option><?} else {?><option value="23:30">11:30 PM</option><?}?>									
+				<?if ($_POST['add_defense_etime'] == "00:00") {?><option value="00:00" selected = "selected">12:00 AM</option><?} else {?><option value="00:00">12:00 AM</option><?}?>																											
+				</select></td>
+			</tr>	
+			<tr>
+				<td><label>Venue <span style="color:#FF0000">*</span></label></td>
+				<td><input name="add_venue" cols="40" rows="2" id="add_venue" type="text" size="50" value="<?=$_POST['add_venue']?>"></td>
+			</tr>
+			<tr>
+				<td><label>Remarks <span style="color:#FF0000">*</span></label></td>
+				<td><input name="add_remarks" type="text" id="add_remarks" size="50" value="<?=$_POST['add_remarks']?>"></td>
+			</tr>	
+			<tr>
+				<td><label>Student <span style="color:#FF0000">*</span></label></td>
+				<td><input name="add_lecturer_name" type="text" id="add_lecturer_name" size="50" readonly=""/>
+				<a class='select' href="../../application/defense/select_student.php" >[Select]</a>				
+				<a class='select_student' href="../../application/defense/select_student.php">[Select]</a>
+				<input id ="add_staff_id" type="hidden" size="100" name="add_staff_id" /></td>
+			</tr>			
+		</table>
+		<table>
+			<tr>
+				<td><input type="submit" name="btnAdd" value="Add" /></td>
+			</tr>
+		</table>
+
+		</p><?php ?>
+		<table>
+		<tr>							
+			<td>Searching Results:- <?=$row_cnt?> record(s) found.</td></td>
+		</tr>
+		</table>
+		<?if ($row_cnt <= 0) {?>
+			<div id = "tabledisplay" style="overflow:auto; height:80px;">
+		<?}
+		else if ($row_cnt <= 1) {?>
+			<div id = "tabledisplay" style="overflow:auto; height:100px;">
+		<?}
+		else if ($row_cnt <= 2) {?>
+			<div id = "tabledisplay" style="overflow:auto; height:150px;">
+		<?}
+		else if ($row_cnt <= 3) {
+			?>
+			<div id = "tabledisplay" style="overflow:auto; height:200px;">
+			<?
+		}
+		else {
+			?>
+			<div id = "tabledisplay" style="overflow:auto; height:300px;">
+			<?
+		}?>		
+		<table border="1" cellpadding="3" cellspacing="3" width="100%" id="inputs10" class="thetable">
+			  <tr align="left">
+				<th align="center" width="5%"><label>Tick</label></td>
+				<th align="center" width="5%"><label>No</label></td>
+				<th align="center" width="30%"><label>Defence Proposal Date <span style="color:#FF0000">*</span></label></th>
+				<th align="left" width="10%"><label>Venue <span style="color:#FF0000">*</span></label></th>
+				<th align="left" width="10%"><label>Remarks <span style="color:#FF0000">*</span></label></th>
+				<th align="left" width="20%"><label>Student <span style="color:#FF0000">*</span></label></th>
+				<th align="left" width="20%"><label>Evaluation Committee <span style="color:#FF0000">*</span></label></th>
+			  </tr>
+
+			<?php
+			if ($row_cnt > 0) {
+				
+				$tmp_no = 0;
+				while($row = mysql_fetch_array($result_sql1)) 					
+				{ 
+					?><tr>
+						<td align="center"><input type="checkbox" name="defense_checkbox[]" id="defense_checkbox" value="<?=$tmp_no;?>" /></td>
+						<td align="center"><label><?=$tmp_no+1;?>.</label></td>
+						<td align="left"><input type="text" name="defense_date[]" id="defense_date<?=$tmp_no;?>" size="10" value="<?=$row["defense_date"];?>" readonly=""></input><br/><br/>
+						<?	$jscript .= "\n" . '$( "#defense_date' . $tmp_no . '" ).datepicker({
+											changeMonth: true,
+											changeYear: true,
+											yearRange: \'-100:+0\',
+											dateFormat: \'dd-M-yy\'
+										});';
+				 
+						?>
+							<select name="defense_stime[]" id="defense_stime" size="1" >
+							<?if ($row['defense_stime'] == "07:00") {?><option value="07:00" selected = "selected">07:00 AM</option><?} else {?><option value="07:00">07:00 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "07:30") {?><option value="07:30" selected = "selected">07:30 AM</option><?} else {?><option value="07:30">07:30 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "08:00") {?><option value="08:00" selected = "selected">08:00 AM</option><?} else {?><option value="08:00">08:00 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "08:30") {?><option value="08:30" selected = "selected">08:30 AM</option><?} else {?><option value="08:30">08:30 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "09:00") {?><option value="09:00" selected = "selected">09:00 AM</option><?} else {?><option value="09:00">09:00 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "09:30") {?><option value="09:30" selected = "selected">09:30 AM</option><?} else {?><option value="09:30">09:30 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "10:00") {?><option value="10:00" selected = "selected">10:00 AM</option><?} else {?><option value="10:00">10:00 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "10:30") {?><option value="10:30" selected = "selected">10:30 AM</option><?} else {?><option value="10:30">10:30 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "11:00") {?><option value="11:00" selected = "selected">11:00 AM</option><?} else {?><option value="11:00">11:00 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "11:30") {?><option value="11:30" selected = "selected">11:30 AM</option><?} else {?><option value="11:30">11:30 AM</option><?}?>									
+							<?if ($row['defense_stime'] == "12:00") {?><option value="12:00" selected = "selected">12:00 PM</option><?} else {?><option value="12:00">12:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "12:30") {?><option value="12:30" selected = "selected">12:30 PM</option><?} else {?><option value="12:30">12:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "13:00") {?><option value="13:00" selected = "selected">01:00 PM</option><?} else {?><option value="13:00">01:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "13:30") {?><option value="13:30" selected = "selected">01:30 PM</option><?} else {?><option value="13:30">01:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "14:00") {?><option value="14:00" selected = "selected">02:00 PM</option><?} else {?><option value="14:00">02:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "14:30") {?><option value="14:30" selected = "selected">02:30 PM</option><?} else {?><option value="14:30">02:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "15:00") {?><option value="15:00" selected = "selected">03:00 PM</option><?} else {?><option value="15:00">03:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "15:30") {?><option value="15:30" selected = "selected">03:30 PM</option><?} else {?><option value="15:30">03:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "16:00") {?><option value="16:00" selected = "selected">04:00 PM</option><?} else {?><option value="16:00">04:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "16:30") {?><option value="16:30" selected = "selected">04:30 PM</option><?} else {?><option value="16:30">04:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "17:00") {?><option value="17:00" selected = "selected">05:00 PM</option><?} else {?><option value="17:00">05:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "17:30") {?><option value="17:30" selected = "selected">05:30 PM</option><?} else {?><option value="17:30">05:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "18:00") {?><option value="18:00" selected = "selected">06:00 PM</option><?} else {?><option value="18:00">06:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "18:30") {?><option value="18:30" selected = "selected">06:30 PM</option><?} else {?><option value="18:30">06:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "19:00") {?><option value="19:00" selected = "selected">07:00 PM</option><?} else {?><option value="19:00">07:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "19:30") {?><option value="19:30" selected = "selected">07:30 PM</option><?} else {?><option value="19:30">07:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "20:00") {?><option value="20:00" selected = "selected">08:00 PM</option><?} else {?><option value="20:00">08:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "20:30") {?><option value="20:30" selected = "selected">08:30 PM</option><?} else {?><option value="20:30">08:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "21:00") {?><option value="21:00" selected = "selected">09:00 PM</option><?} else {?><option value="21:00">09:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "21:30") {?><option value="21:30" selected = "selected">09:30 PM</option><?} else {?><option value="21:30">09:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "22:00") {?><option value="22:00" selected = "selected">10:00 PM</option><?} else {?><option value="22:00">10:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "22:30") {?><option value="22:30" selected = "selected">10:30 PM</option><?} else {?><option value="22:30">10:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "23:00") {?><option value="23:00" selected = "selected">11:00 PM</option><?} else {?><option value="23:00">11:00 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "23:30") {?><option value="23:30" selected = "selected">11:30 PM</option><?} else {?><option value="23:30">11:30 PM</option><?}?>									
+							<?if ($row['defense_stime'] == "00:00") {?><option value="00:00" selected = "selected">12:00 AM</option><?} else {?><option value="00:00">12:00 AM</option><?}?>																											
+							</select> to
+							<select name="defense_etime[]" id="defense_etime" size="1" >
+							<?if ($row['defense_etime'] == "07:00") {?><option value="07:00" selected = "selected">07:00 AM</option><?} else {?><option value="07:00">07:00 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "07:30") {?><option value="07:30" selected = "selected">07:30 AM</option><?} else {?><option value="07:30">07:30 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "08:00") {?><option value="08:00" selected = "selected">08:00 AM</option><?} else {?><option value="08:00">08:00 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "08:30") {?><option value="08:30" selected = "selected">08:30 AM</option><?} else {?><option value="08:30">08:30 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "09:00") {?><option value="09:00" selected = "selected">09:00 AM</option><?} else {?><option value="09:00">09:00 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "09:30") {?><option value="09:30" selected = "selected">09:30 AM</option><?} else {?><option value="09:30">09:30 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "10:00") {?><option value="10:00" selected = "selected">10:00 AM</option><?} else {?><option value="10:00">10:00 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "10:30") {?><option value="10:30" selected = "selected">10:30 AM</option><?} else {?><option value="10:30">10:30 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "11:00") {?><option value="11:00" selected = "selected">11:00 AM</option><?} else {?><option value="11:00">11:00 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "11:30") {?><option value="11:30" selected = "selected">11:30 AM</option><?} else {?><option value="11:30">11:30 AM</option><?}?>									
+							<?if ($row['defense_etime'] == "12:00") {?><option value="12:00" selected = "selected">12:00 PM</option><?} else {?><option value="12:00">12:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "12:30") {?><option value="12:30" selected = "selected">12:30 PM</option><?} else {?><option value="12:30">12:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "13:00") {?><option value="13:00" selected = "selected">01:00 PM</option><?} else {?><option value="13:00">01:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "13:30") {?><option value="13:30" selected = "selected">01:30 PM</option><?} else {?><option value="13:30">01:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "14:00") {?><option value="14:00" selected = "selected">02:00 PM</option><?} else {?><option value="14:00">02:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "14:30") {?><option value="14:30" selected = "selected">02:30 PM</option><?} else {?><option value="14:30">02:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "15:00") {?><option value="15:00" selected = "selected">03:00 PM</option><?} else {?><option value="15:00">03:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "15:30") {?><option value="15:30" selected = "selected">03:30 PM</option><?} else {?><option value="15:30">03:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "16:00") {?><option value="16:00" selected = "selected">04:00 PM</option><?} else {?><option value="16:00">04:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "16:30") {?><option value="16:30" selected = "selected">04:30 PM</option><?} else {?><option value="16:30">04:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "17:00") {?><option value="17:00" selected = "selected">05:00 PM</option><?} else {?><option value="17:00">05:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "17:30") {?><option value="17:30" selected = "selected">05:30 PM</option><?} else {?><option value="17:30">05:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "18:00") {?><option value="18:00" selected = "selected">06:00 PM</option><?} else {?><option value="18:00">06:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "18:30") {?><option value="18:30" selected = "selected">06:30 PM</option><?} else {?><option value="18:30">06:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "19:00") {?><option value="19:00" selected = "selected">07:00 PM</option><?} else {?><option value="19:00">07:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "19:30") {?><option value="19:30" selected = "selected">07:30 PM</option><?} else {?><option value="19:30">07:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "20:00") {?><option value="20:00" selected = "selected">08:00 PM</option><?} else {?><option value="20:00">08:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "20:30") {?><option value="20:30" selected = "selected">08:30 PM</option><?} else {?><option value="20:30">08:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "21:00") {?><option value="21:00" selected = "selected">09:00 PM</option><?} else {?><option value="21:00">09:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "21:30") {?><option value="21:30" selected = "selected">09:30 PM</option><?} else {?><option value="21:30">09:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "22:00") {?><option value="22:00" selected = "selected">10:00 PM</option><?} else {?><option value="22:00">10:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "22:30") {?><option value="22:30" selected = "selected">10:30 PM</option><?} else {?><option value="22:30">10:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "23:00") {?><option value="23:00" selected = "selected">11:00 PM</option><?} else {?><option value="23:00">11:00 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "23:30") {?><option value="23:30" selected = "selected">11:30 PM</option><?} else {?><option value="23:30">11:30 PM</option><?}?>									
+							<?if ($row['defense_etime'] == "00:00") {?><option value="00:00" selected = "selected">12:00 AM</option><?} else {?><option value="00:00">12:00 AM</option><?}?>																											
+							</select></td>
+						<input type="hidden" name="defense_calendar_id[]" id="defense_calendar_id" value="<?=$row['id'];?>" />
+						<td><input name="venue[]" type="text" id="venue" value="<?=$row["venue"];?>" size="50"></input></td>
+						<td><input type="text" name="remarks[]" id="remarks" value="<?=$row["remarks"];?>"></input></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<?
+					$tmp_no++;}
+			}
+			else {
+				?>
+				<table>
+					<tr>
+						<td><label>No record found!</label></td>
+					</tr>
+				</table>
+				<?
+			}?> 			
+		</table>
+		</div>
+		<br/>
+		<table>
+			<tr>
+				<td><span style="color:#FF0000">Notes:</span></td>
+			</tr>
+			<tr>
+				<td>1. Field marks with (<span style="color:#FF0000">*</span>) is compulsory.</td>
+			</tr>
+			<tr>
+				<td>2. Please tick the checkbox before click Update or Delete button.</td>
+			</tr>
+		</table>
+	</fieldset>
+	<table>
+		<tr>
+			<td><input type="button" name="btnBack" value="Back" onclick="javascript:document.location.href='../defense/edit_defense.php?tid=<?=$thesis_id?>&pid=<?=$proposal_id?>&ref=<?=$referenceNo?>';" /></input></td>		
+			<td><input type="submit" name="btnUpdate" value="Update" /></input></td>
+			<td><input type="submit" name="btnDelete" onClick="return respConfirm()" value="Delete" /></input></td>
+		</tr>
+	</table>
+
+  </form>
+  	<script>
+		<?=$jscript;?>
+	</script>
+</body>
+</html>
+
+
+
+
+

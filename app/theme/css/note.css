@@ -1,0 +1,17 @@
+.note {
+ width:300px;
+ height:300px;    
+}
+
+.note{
+    background: #eff9ff;
+    -webkit-transition: background .5s;
+}
+
+.note:hover{
+    background: #d6e4f2 !important;
+}
+
+.note:active{
+    background: #bfcdda;
+} 

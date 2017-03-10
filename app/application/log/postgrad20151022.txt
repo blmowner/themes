@@ -1,0 +1,190 @@
+Date Time: 22-Oct-2015 10:54:15 AM
+Error no : 1062: Duplicate entry 'I1' for key 1
+Invalid SQL: INSERT INTO pg_messages
+	(id, sender, subject, message, message_date, status, status_date)
+	VALUES('I1','senate','Thesis Endorsement','<div>
+					  <div><span color="#837E7E" size="-1" face="Trebuchet MS, Arial, Helvetica, sans-serif" data-mce-style="color: #837e7e; font-family: Trebuchet MS,Arial,Helvetica,sans-serif;">
+						<center>
+						  <img src="http://www.msu.edu.my/v9/images/logo2t.png" alt="Management &amp; Science University" data-mce-src="http://www.msu.edu.my/v9/images/logo2t.png" /> <br />
+						  <hr noshade="noshade" size="1" />
+						  <br>
+						</center>
+						<table>
+						 <div></div>
+						<tr>
+							<td><font face="Verdana, Arial, Helvetica, sans-serif">
+Dear NORHASLINDA BINTI ZAKARIYA,
+
+</font><td>
+						</tr>
+						 <div></div>
+						<tr>
+							<td><font face="Verdana, Arial, Helvetica, sans-serif">
+
+							Please be informed, your thesis has been endorsed by Senate.
+
+</font></td>
+						 </tr><div></div>
+						 <tr>
+							<td>&nbsp;</td>
+						 </tr>
+						 </table>
+						<table style ="table-layout: auto;">
+						<tr>
+						  
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif">Student Name </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">NORHASLINDA BINTI ZAKARIYA</font></td>
+						  </tr>
+						<tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif">Matric No </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">012006051796</font></td>
+						  </tr>
+						<tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF"  face="Verdana, Arial, Helvetica, sans-serif">Thesis ID </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">T20150805001</font></td>
+						  </tr>
+						  <tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF"  face="Verdana, Arial, Helvetica, sans-serif">Endosed Date </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">22-10-2015 10:54 AM</font></td>
+						  </tr>
+						<tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif">
+						  Session Date</font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">28-Oct-2015, 09:00AM to 12:00PM, Meeting Room VIVA 1</font></td>
+						</tr>  
+						  </table>
+						<div><br />
+					  </div>
+					  <font face="Verdana, Arial, Helvetica, sans-serif"> 
+
+					  <br>Thank you,
+<br></font>
+					   <div></div>
+					  <div><br><font face="Verdana, Arial, Helvetica, sans-serif">Best Regards,</font></div>
+					  <div><br><font face="Verdana, Arial, Helvetica, sans-serif">Management &amp; Science University</font><br /></div>
+					  <div><br />
+						<center>
+						  <div><br /></div>
+						  <hr noshade="noshade" size="1" />
+						  <font size="-1" color="#837E7E"  face="Verdana, Arial, Helvetica, sans-serif">
+								Please do not reply directly to this email. &copy; MSU 2015All rights reserved.<br><br>
+								Management & Science University.<br />
+								University Drive, Off Persiaran Olahraga,<br />
+								Section 14, 40100 Shah Alam,<br />
+								Selangor Darul Ehsan.<br />
+						  </font>
+						</center>
+					  </div>
+					</div>
+					', '2015-10-22 10:54:15','NEW', '2015-10-22 10:54:15')
+Source: /app/application/senate/thesis_endorsement.php
+Triggered By: senate
+
+Date Time: 22-Oct-2015 10:55:33 AM
+Error no : 1062: Duplicate entry 'I1' for key 1
+Invalid SQL: INSERT INTO pg_messages
+	(id, sender, subject, message, message_date, status, status_date)
+	VALUES('I1','senate','Thesis Endorsement','<div>
+					  <div><span color="#837E7E" size="-1" face="Trebuchet MS, Arial, Helvetica, sans-serif" data-mce-style="color: #837e7e; font-family: Trebuchet MS,Arial,Helvetica,sans-serif;">
+						<center>
+						  <img src="http://www.msu.edu.my/v9/images/logo2t.png" alt="Management &amp; Science University" data-mce-src="http://www.msu.edu.my/v9/images/logo2t.png" /> <br />
+						  <hr noshade="noshade" size="1" />
+						  <br>
+						</center>
+						<table>
+						 <div></div>
+						<tr>
+							<td><font face="Verdana, Arial, Helvetica, sans-serif">
+Dear NORHASLINDA BINTI ZAKARIYA,
+
+</font><td>
+						</tr>
+						 <div></div>
+						<tr>
+							<td><font face="Verdana, Arial, Helvetica, sans-serif">
+
+							Please be informed, your thesis has been endorsed by Senate.
+
+</font></td>
+						 </tr><div></div>
+						 <tr>
+							<td>&nbsp;</td>
+						 </tr>
+						 </table>
+						<table style ="table-layout: auto;">
+						<tr>
+						  
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif">Student Name </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">NORHASLINDA BINTI ZAKARIYA</font></td>
+						  </tr>
+						<tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif">Matric No </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">012006051796</font></td>
+						  </tr>
+						<tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF"  face="Verdana, Arial, Helvetica, sans-serif">Thesis ID </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">T20150805001</font></td>
+						  </tr>
+						  <tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF"  face="Verdana, Arial, Helvetica, sans-serif">Endosed Date </font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">22-10-2015 10:55 AM</font></td>
+						  </tr>
+						<tr>
+						  <td bgcolor="#5B74A8"><strong><font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif">
+						  Session Date</font></strong></td>
+						  <td bgcolor="#DBDBDB"><font face="Verdana, Arial, Helvetica, sans-serif">28-Oct-2015, 09:00AM to 12:00PM, Meeting Room VIVA 1</font></td>
+						</tr>  
+						  </table>
+						<div><br />
+					  </div>
+					  <font face="Verdana, Arial, Helvetica, sans-serif"> 
+
+					  <br>Thank you,
+<br></font>
+					   <div></div>
+					  <div><br><font face="Verdana, Arial, Helvetica, sans-serif">Best Regards,</font></div>
+					  <div><br><font face="Verdana, Arial, Helvetica, sans-serif">Management &amp; Science University</font><br /></div>
+					  <div><br />
+						<center>
+						  <div><br /></div>
+						  <hr noshade="noshade" size="1" />
+						  <font size="-1" color="#837E7E"  face="Verdana, Arial, Helvetica, sans-serif">
+								Please do not reply directly to this email. &copy; MSU 2015All rights reserved.<br><br>
+								Management & Science University.<br />
+								University Drive, Off Persiaran Olahraga,<br />
+								Section 14, 40100 Shah Alam,<br />
+								Selangor Darul Ehsan.<br />
+						  </font>
+						</center>
+					  </div>
+					</div>
+					', '2015-10-22 10:55:33','NEW', '2015-10-22 10:55:33')
+Source: /app/application/senate/thesis_endorsement.php
+Triggered By: senate
+
+Date Time: 22-Oct-2015 11:02:55 AM
+Error no : 1062: Duplicate entry '20151022001' for key 1
+Invalid SQL: INSERT INTO pg_messages_detail
+	(id, message_id, recipient, recipient_status, recipient_status_date, sender_status, sender_status_date)
+	VALUES('20151022001','I20151022002', '012006051796', 'NEW', '2015-10-22 11:02:55', 'NEW', '2015-10-22 11:02:55')
+Source: /app/application/senate/thesis_endorsement.php
+Triggered By: senate
+
+Date Time: 22-Oct-2015 12:38:37 PM
+Error no : 1146: Table 'demopostgrad.BASE_CONSTANT' doesn't exist
+Invalid SQL: SELECT const_value as version
+		FROM BASE_CONSTANT
+		WHERE const_category = 'VERSION'
+		AND const_term = 'VERSION'
+Source: /app/application/about/about.php
+Triggered By: S012014110027
+
+Date Time: 22-Oct-2015 12:39:29 PM
+Error no : 1146: Table 'demopostgrad.BASE_CONSTANT' doesn't exist
+Invalid SQL: SELECT const_value as version
+		FROM BASE_CONSTANT
+		WHERE const_category = 'VERSION'
+		AND const_term = 'VERSION'
+Source: /app/application/about/about.php
+Triggered By: S012014110027
+

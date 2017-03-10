@@ -1,0 +1,674 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+	<title>Online Help - Faculty- Table of Contents</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="HelpNDoc Personal Edition 4.7.1.684">
+	<link type="text/css" rel="stylesheet" media="all" href="css/reset.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/silver-theme/jquery-ui-1.8.12.custom.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/dynatree/chm/ui.dynatree.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/base.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/hnd.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="css/toc.css" />
+	<!--[if lte IE 8]>
+		<link type="text/css" rel="stylesheet" media="all" href="css/ielte8.css" />
+	<![endif]-->
+	<style type="text/css">
+		#tabs .ui-widget-header
+		{
+			background-color: #EFEFEF;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery.dynatree.min.js"></script>
+	<script type="text/javascript" src="js/hndjsse.js"></script>
+	<script type="text/javascript">
+	
+		window.bSearchDataLoaded = false;
+		var sHelpIdToActivate = '';
+	
+		$(document).ready(function()
+		{
+			var sAnchorName = '';
+			try { sAnchorName = top.location.href.substring(top.location.href.lastIndexOf("#") + 1, top.location.href.length); }
+			catch(err) { sAnchorName = ''; }
+			var nSelectedTab = 0;
+			if (sAnchorName == '_index') nSelectedTab = 1
+			else if (sAnchorName == '_search') nSelectedTab = 2;			
+			$("#tabs").tabs({
+				selected: nSelectedTab,
+				select: function(event, ui) { HideKwPopup(); }
+			});
+			
+			// Toc
+			if ($("#tab-toc").length) {
+				$("#tab-toc").dynatree({
+					clickFolderMode: 1,
+					debugLevel: 0,
+					imagePath: 'css/dynatree/chm/',
+					onActivate: function(node){
+						if ($("#tab-keywords").length && $("#tab-keywords").dynatree && $("#tab-keywords").dynatree("getTree") && $("#tab-keywords").dynatree("getTree").activateKey)
+							$("#tab-keywords").dynatree("getTree").activateKey(null);
+						if(node.data.href && node.data.href != '#'){
+							window.open(node.data.href, node.data.target);
+						}
+					}
+				});
+				// Expand all nodes if required
+				$("#tab-toc").dynatree("getRoot").visit(function(node){
+						node.expand(true);
+					});
+				// Select the active help id
+				if (sHelpIdToActivate != '') $("#tab-toc").dynatree("getTree").activateKey(sHelpIdToActivate);
+			}
+			
+			// Keywords
+			
+			if ($("#tab-keywords").length) {
+				$("#tab-keywords").dynatree({
+					clickFolderMode: 1,
+					debugLevel: 0,
+					imagePath: 'css/dynatree/chm/',
+					onClick: function(node, event){
+						HideKwPopup();
+						if (node.data && node.data.click)
+						{
+							var aRefList = null;
+							eval('aRefList=' + node.data.click);
+							if (ShowKwPopup(node.li, aRefList))
+							{
+								if ($("#tab-toc") && $("#tab-toc").dynatree && $("#tab-toc").dynatree("getTree") && $("#tab-toc").dynatree("getTree").activateKey)
+									$("#tab-toc").dynatree("getTree").activateKey(null);
+								if(node.data.href && node.data.href != '#'){
+									window.open(node.data.href, node.data.target);
+								}
+							}
+						}
+					}
+				});
+				// Expand all nodes if required
+				$("#tab-keywords").dynatree("getRoot").visit(function(node){
+						node.expand(true);
+					});
+				}
+			
+			// Load search data
+			(function() {
+				var se = document.createElement('script'); se.type = 'text/javascript'; se.async = true;
+				se.src = 'js/hndsd.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(se, s);
+			})();
+		});
+		
+		$('body').click(function() {
+			HideKwPopup();
+		});
+		
+		function SelectTocItem(sHelpId)
+		{
+			if ($("#tab-toc").length && $("#tab-toc").dynatree && $("#tab-toc").dynatree("getTree") && $("#tab-toc").dynatree("getTree").getNodeByKey) {
+				$("#tab-toc").dynatree("getTree").getNodeByKey(sHelpId).activateSilently();
+			}
+			else {
+				sHelpIdToActivate = sHelpId;
+			}
+		}
+		
+		function HideKwPopup()
+		{
+			if($("#popupMenu")) $("#popupMenu").remove();
+		}
+		
+		function ShowKwPopup(oSender, aLinks)
+		{
+			HideKwPopup();
+			if (!aLinks || !aLinks.length || aLinks.length == 0) return false
+			else if (aLinks.length == 1) return true
+			else
+			{
+				var oParentDiv = document.createElement("DIV");
+				oParentDiv.id = "popupMenu";
+				var oLink = null;
+				// Close button
+				oLink = document.createElement("SPAN");
+				oLink.className = "close-button";
+				oLink.innerHTML = "X";
+				oLink.href = "#";
+				oLink.onclick = HideKwPopup;
+				oParentDiv.appendChild(oLink);
+				// Items
+				for (var nCnt=0; nCnt<aLinks.length; nCnt++)
+				{
+					oLink = document.createElement("A");
+					oLink.innerHTML = aLinks[nCnt][0];
+					oLink.href = aLinks[nCnt][1];
+					oLink.target = "FrameMain";
+					oLink.onclick = HideKwPopup;
+					oParentDiv.appendChild(oLink);
+				}
+				document.body.appendChild(oParentDiv);
+				var pos = $(oSender).offset(); 
+				var height = $(oSender).height();
+				$(oParentDiv).css({
+					"left": (pos.left+20) + "px",
+					"top": (pos.top + height + 5) + "px"
+				});
+				$(oParentDiv).show();
+				return false;
+			}
+		}
+		
+		function PerformSearch()
+		{
+			if (!window.bSearchDataLoaded) {
+				$("#search_results").html("Search engine data hasn't been fully loaded yet or an error occurred while loading it. This usually happens when documentation is browsed locally.");
+				return;
+			}
+			sValue = $("#search_value").val();
+			$("#search_results").html('Searching...');
+			var oSearchEngine = new HndJsSe;
+			oSearchEngine.ParseInput(sValue);			
+			oSearchEngine.PerformSearch();
+			if (!oSearchEngine.aResults || !oSearchEngine.aResults.length)
+			{
+				$("#search_results").html('No results found.');
+			}
+			else
+			{
+				$("#search_results").html('<div id="search_results_content"></div>');
+				var oUl = $("#search_results_content").append("<ul id='lr'></ul>").find("ul");
+				for (var nCnt = 0; nCnt < oSearchEngine.aResults.length; nCnt++)
+				{
+					if (oSearchEngine.aResults[nCnt][0] < aTl.length)
+					{
+						oUl.append("<li><a href='" + aTl[oSearchEngine.aResults[nCnt][0]][0] + "?search=" + escape(sValue) + "' target='FrameMain'>" + unescape(aTl[oSearchEngine.aResults[nCnt][0]][1]) + "</a></li>");
+					}
+				}
+				// Tree
+				$("#search_results_content").dynatree({
+					clickFolderMode: 1,
+					debugLevel: 0,
+					imagePath: 'css/dynatree/chm/',
+					onActivate: function(node){
+						if ($("#search_results_content") && $("#search_results_content").dynatree && $("#search_results_content").dynatree("getTree") && $("#search_results_content").dynatree("getTree").activateKey)
+							$("#search_results_content").dynatree("getTree").activateKey(null);
+						if(node.data.href && node.data.href != '#'){
+							window.open(node.data.href, node.data.target);
+						}
+					}
+				});
+			}
+		}
+	</script>
+</head>
+
+<body>
+
+	<div id="tabs">
+		<ul>
+			<li><a href="#tab-toc">Contents</a></li>
+			<li><a href="#tab-keywords">Index</a></li>
+			<li><a href="#tab-search">Search</a></li>
+			</ul>
+		<div id="tab-toc">
+			<ul id="toc" class="">
+
+				<li class="folder" id="Introduction" data="">
+							<a
+							href="Introduction.html"
+							target="FrameMain">
+								Introduction</a>
+
+				<ul><li class="" id="Scope" data="">
+							<a
+							href="Scope.html"
+							target="FrameMain">
+								Scope</a>
+
+				</li><li class="" id="SystemRequirement" data="">
+							<a
+							href="SystemRequirement.html"
+							target="FrameMain">
+								System Requirement</a>
+
+				</li><li class="" id="ScreenDesign" data="">
+							<a
+							href="ScreenDesign.html"
+							target="FrameMain">
+								Screen Design</a>
+
+				</li></ul></li><li class="folder" id="HighLevelFlow" data="">
+							<a
+							href="HighLevelFlow.html"
+							target="FrameMain">
+								High Level Flow</a>
+
+				<ul><li class="" id="ThesisProposalSubmissionProcessF" data="">
+							<a
+							href="ThesisProposalSubmissionProcessF.html"
+							target="FrameMain">
+								Thesis Proposal Submission Process Flow</a>
+
+				</li><li class="" id="DefenceProposalProcessFlow" data="">
+							<a
+							href="DefenceProposalProcessFlow.html"
+							target="FrameMain">
+								Defence Proposal Process Flow</a>
+
+				</li><li class="" id="WorkCompletionProcessFlow" data="">
+							<a
+							href="WorkCompletionProcessFlow.html"
+							target="FrameMain">
+								Work Completion Process Flow</a>
+
+				</li><li class="" id="VIVAEvaluationProcessFlow" data="">
+							<a
+							href="VIVAEvaluationProcessFlow.html"
+							target="FrameMain">
+								VIVA Evaluation Process Flow</a>
+
+				</li></ul></li><li class="folder" id="ModuleandFeatures" data="">
+							<a
+							href="ModuleandFeatures.html"
+							target="FrameMain">
+								Module and Features</a>
+
+				<ul><li class="" id="AvailableModuleandFeature" data="">
+							<a
+							href="AvailableModuleandFeature.html"
+							target="FrameMain">
+								Available Module and Feature</a>
+
+				</li></ul></li><li class="folder" id="GettingStartedFaculty" data="">
+							<a
+							href="GettingStartedFaculty.html"
+							target="FrameMain">
+								Getting Started - Faculty</a>
+
+				<ul><li class="folder" id="Main" data="">
+							<a
+							href="Main.html"
+							target="FrameMain">
+								Main</a>
+
+				<ul><li class="" id="Announcement" data="">
+							<a
+							href="Announcement.html"
+							target="FrameMain">
+								Announcement</a>
+
+				</li></ul></li><li class="folder" id="THESIS" data="">
+							<a
+							href="THESIS.html"
+							target="FrameMain">
+								THESIS</a>
+
+				<ul><li class="" id="Listofthesis" data="">
+							<a
+							href="Listofthesis.html"
+							target="FrameMain">
+								List of thesis</a>
+
+				</li><li class="folder" id="StudentProfile" data="">
+							<a
+							href="StudentProfile.html"
+							target="FrameMain">
+								Student Profile</a>
+
+				<ul><li class="" id="StudentProfile1" data="">
+							<a
+							href="StudentProfile1.html"
+							target="FrameMain">
+								Student Profile</a>
+
+				</li><li class="" id="SupervisorCoSupervisorList" data="">
+							<a
+							href="SupervisorCoSupervisorList.html"
+							target="FrameMain">
+								Supervisor/Co-Supervisor List</a>
+
+				</li><li class="" id="SubjectTaken" data="">
+							<a
+							href="SubjectTaken.html"
+							target="FrameMain">
+								Subject Taken</a>
+
+				</li><li class="" id="ThesisHistory" data="">
+							<a
+							href="ThesisHistory.html"
+							target="FrameMain">
+								Thesis History</a>
+
+				</li></ul></li><li class="folder" id="ThesisProfile" data="">
+							<a
+							href="ThesisProfile.html"
+							target="FrameMain">
+								Thesis Profile</a>
+
+				<ul><li class="" id="StudentProfile2" data="">
+							<a
+							href="StudentProfile2.html"
+							target="FrameMain">
+								Student Profile</a>
+
+				</li><li class="" id="SupervisorCoSupervisorList1" data="">
+							<a
+							href="SupervisorCoSupervisorList1.html"
+							target="FrameMain">
+								Supervisor/Co-Supervisor List</a>
+
+				</li><li class="" id="SubjectTaken1" data="">
+							<a
+							href="SubjectTaken1.html"
+							target="FrameMain">
+								Subject Taken</a>
+
+				</li><li class="" id="ThesisHistory1" data="">
+							<a
+							href="ThesisHistory1.html"
+							target="FrameMain">
+								Thesis History</a>
+
+				</li></ul></li></ul></li><li class="folder" id="MONTHLYPROGRESSREPORT" data="">
+							<a
+							href="MONTHLYPROGRESSREPORT.html"
+							target="FrameMain">
+								MONTHLY PROGRESS REPORT</a>
+
+				<ul><li class="" id="ListMonthlyProgressReport" data="">
+							<a
+							href="ListMonthlyProgressReport.html"
+							target="FrameMain">
+								List Monthly Progress Report</a>
+
+				</li></ul></li><li class="folder" id="WORKCOMPLETION" data="">
+							<a
+							href="WORKCOMPLETION.html"
+							target="FrameMain">
+								WORK COMPLETION</a>
+
+				<ul><li class="" id="VERIFYAMENDMENT" data="">
+							<a
+							href="VERIFYAMENDMENT.html"
+							target="FrameMain">
+								VERIFY AMENDMENT</a>
+
+				</li></ul></li><li class="folder" id="THESISEVALUATIONVIVA" data="">
+							<a
+							href="THESISEVALUATIONVIVA.html"
+							target="FrameMain">
+								THESIS EVALUATION / VIVA</a>
+
+				<ul><li class="" id="AmendmentReview" data="">
+							<a
+							href="AmendmentReview.html"
+							target="FrameMain">
+								Amendment Review</a>
+
+				</li><li class="" id="ListofAppeal" data="">
+							<a
+							href="ListofAppeal.html"
+							target="FrameMain">
+								List of Appeal</a>
+
+				</li><li class="" id="Newtopic" data="">
+							<a
+							href="Newtopic.html"
+							target="FrameMain">
+								New topic</a>
+
+				</li></ul></li><li class="folder" id="ADMINISTRATION" data="">
+							<a
+							href="ADMINISTRATION.html"
+							target="FrameMain">
+								ADMINISTRATION</a>
+
+				<ul><li class="" id="AssignEvaluationPanel" data="">
+							<a
+							href="AssignEvaluationPanel.html"
+							target="FrameMain">
+								Assign Evaluation Panel</a>
+
+				</li><li class="" id="ScheduleEvaluationSession" data="">
+							<a
+							href="ScheduleEvaluationSession.html"
+							target="FrameMain">
+								Schedule Evaluation Session</a>
+
+				</li><li class="folder" id="ReviewerFeedbackApproval1" data="">
+							<a
+							href="ReviewerFeedbackApproval1.html"
+							target="FrameMain">
+								Reviewer Feedback Approval</a>
+
+				<ul><li class="" id="FeedbackbyReviewer" data="">
+							<a
+							href="FeedbackbyReviewer.html"
+							target="FrameMain">
+								Feedback by Reviewer</a>
+
+				</li><li class="" id="FeedbackDueRequestExtensionAppro" data="">
+							<a
+							href="FeedbackDueRequestExtensionAppro.html"
+							target="FrameMain">
+								Feedback Due – Request Extension Approval</a>
+
+				</li></ul></li><li class="" id="UnassignSupervisor2" data="">
+							<a
+							href="UnassignSupervisor2.html"
+							target="FrameMain">
+								Unassign Supervisor</a>
+
+				</li><li class="" id="ProposalConfirmation" data="">
+							<a
+							href="ProposalConfirmation.html"
+							target="FrameMain">
+								Proposal Confirmation</a>
+
+				</li><li class="" id="ProposalCancellation1" data="">
+							<a
+							href="ProposalCancellation1.html"
+							target="FrameMain">
+								Proposal Cancellation</a>
+
+				</li><li class="folder" id="AssignReviewer3" data="">
+							<a
+							href="AssignReviewer3.html"
+							target="FrameMain">
+								Assign Reviewer</a>
+
+				<ul><li class="" id="AssignReviewer4" data="">
+							<a
+							href="AssignReviewer4.html"
+							target="FrameMain">
+								Assign Reviewer</a>
+
+				</li><li class="" id="AssignReviewerviaProposalConfirm" data="">
+							<a
+							href="AssignReviewerviaProposalConfirm.html"
+							target="FrameMain">
+								Assign Reviewer via Proposal Confirmation</a>
+
+				</li></ul></li><li class="folder" id="AssignSupervisor1" data="">
+							<a
+							href="AssignSupervisor1.html"
+							target="FrameMain">
+								Assign Supervisor</a>
+
+				<ul><li class="" id="AssignSupervisor2" data="">
+							<a
+							href="AssignSupervisor2.html"
+							target="FrameMain">
+								Assign Supervisor</a>
+
+				</li><li class="" id="AssignSupervisorviaProposalConfi" data="">
+							<a
+							href="AssignSupervisorviaProposalConfi.html"
+							target="FrameMain">
+								Assign Supervisor via Proposal Confirmation</a>
+
+				</li></ul></li><li class="" id="ListofThesisProposalDissapproved" data="">
+							<a
+							href="ListofThesisProposalDissapproved.html"
+							target="FrameMain">
+								List of Thesis Proposal-Dissapproved</a>
+
+				</li></ul></li><li class="folder" id="MESSAGE" data="">
+							<a
+							href="MESSAGE.html"
+							target="FrameMain">
+								MESSAGE</a>
+
+				<ul><li class="folder" id="Inbox" data="">
+							<a
+							href="Inbox.html"
+							target="FrameMain">
+								Inbox</a>
+
+				<ul><li class="" id="NewandReadMessage" data="">
+							<a
+							href="NewandReadMessage.html"
+							target="FrameMain">
+								New and Read Message</a>
+
+				</li><li class="" id="DeleteMessage" data="">
+							<a
+							href="DeleteMessage.html"
+							target="FrameMain">
+								Delete Message</a>
+
+				</li></ul></li><li class="folder" id="NewMessage" data="">
+							<a
+							href="NewMessage.html"
+							target="FrameMain">
+								New Message</a>
+
+				<ul><li class="" id="SendMessage" data="">
+							<a
+							href="SendMessage.html"
+							target="FrameMain">
+								Send Message</a>
+
+				</li><li class="" id="SelectRecipient" data="">
+							<a
+							href="SelectRecipient.html"
+							target="FrameMain">
+								Select Recipient</a>
+
+				</li><li class="" id="UploadAttachmentAdd" data="">
+							<a
+							href="UploadAttachmentAdd.html"
+							target="FrameMain">
+								Upload Attachment - Add</a>
+
+				</li><li class="" id="UploadAttachmentUpdate" data="">
+							<a
+							href="UploadAttachmentUpdate.html"
+							target="FrameMain">
+								Upload Attachment - Update</a>
+
+				</li><li class="" id="UploadAttachmentDelete" data="">
+							<a
+							href="UploadAttachmentDelete.html"
+							target="FrameMain">
+								Upload Attachment - Delete</a>
+
+				</li></ul></li><li class="folder" id="SentMessage" data="">
+							<a
+							href="SentMessage.html"
+							target="FrameMain">
+								Sent Message</a>
+
+				<ul><li class="" id="ViewSentMessage" data="">
+							<a
+							href="ViewSentMessage.html"
+							target="FrameMain">
+								View Sent Message</a>
+
+				</li><li class="" id="DeleteSentMessage" data="">
+							<a
+							href="DeleteSentMessage.html"
+							target="FrameMain">
+								Delete Sent Message</a>
+
+				</li></ul></li></ul></li><li class="folder" id="CONTROLPANEL" data="">
+							<a
+							href="CONTROLPANEL.html"
+							target="FrameMain">
+								CONTROL PANEL</a>
+
+				<ul><li class="folder" id="ChangePassword" data="">
+							<a
+							href="ChangePassword.html"
+							target="FrameMain">
+								Change Password</a>
+
+				<ul><li class="" id="BeforeLogin" data="">
+							<a
+							href="BeforeLogin.html"
+							target="FrameMain">
+								Before Login</a>
+
+				</li><li class="" id="AfterLogin" data="">
+							<a
+							href="AfterLogin.html"
+							target="FrameMain">
+								After Login</a>
+
+				</li></ul></li></ul></li><li class="folder" id="HELP" data="">
+							<a
+							href="HELP.html"
+							target="FrameMain">
+								HELP</a>
+
+				<ul><li class="" id="OnlineHelp" data="">
+							<a
+							href="OnlineHelp.html"
+							target="FrameMain">
+								Online Help</a>
+
+				</li><li class="" id="UserManual" data="">
+							<a
+							href="UserManual.html"
+							target="FrameMain">
+								User Manual</a>
+
+				</li><li class="" id="FrequentlyAskedQuestions" data="">
+							<a
+							href="FrequentlyAskedQuestions.html"
+							target="FrameMain">
+								Frequently Asked Questions</a>
+
+				</li><li class="" id="AboutUs" data="">
+							<a
+							href="AboutUs.html"
+							target="FrameMain">
+								About Us</a>
+
+				</li></ul></li></ul></li></ul>
+		</div>
+		
+		<div id="tab-keywords">
+			<ul id="keywords">
+
+				</ul>
+		</div>
+		
+		<div id="tab-search">
+			<form onsubmit="PerformSearch(); return false;">
+				<label for="search_value">Search:</label>
+				<input id="search_value" name="search_value"></input>
+				<input type="submit" value="Search"/>
+			</form>
+			<div id="search_results"></div>
+		</div>
+		
+		</div>
+    
+</body>
+
+</html>
+

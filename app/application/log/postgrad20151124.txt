@@ -1,0 +1,14 @@
+Date Time: 24-Nov-2015 12:36:49 PM
+Error no : 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''' at line 1
+Invalid SQL: SELECT staff_id FROM user_acc WHERE staff_id='' or 1=1 --'
+Source: /forgot_pwd.php
+Triggered By: 
+
+Date Time: 24-Nov-2015 05:30:54 PM
+Error no : 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+Invalid SQL: INSERT INTO pg_credential
+					(id, user_id, password, change_date)
+					VALUES ('20151124001', '' or 1=1 -- ', '38c1a888fa82a87cf3622e8ebdc945de', now())
+Source: /forgot_pwd.php
+Triggered By: 
+

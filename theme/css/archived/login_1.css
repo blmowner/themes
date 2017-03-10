@@ -1,0 +1,237 @@
+body{margin: 100px 0px 0px 0px; font-family: Arial, Helvetica, sans-serif; background-color: #232728;}
+
+.white_stripe{position:absolute; z-index: 1; background: #fcfdfd; height: 359px;margin-top:23px; width: 100%;}
+.banner_left{position:absolute; z-index:2; background: url(../images/postgrad-login.png) no-repeat; height: 409px; width: 100%;}
+.banner_right{float: right; width: 48%;}
+
+
+/******************/
+.banner_center{
+    background: rgba(0, 0, 0, 0.4);
+	/*background-color:#EAEAEE;*/
+	float: left;
+	width: 30%;
+	height: 26%;
+	margin-top: 50px;
+	padding: 20px 30px 180px 10px;
+	overflow:auto;
+	margin-left: 290px;
+}
+.announce_table{
+	
+	padding: 4px 15px;
+	background: rgba(255, 255, 255, 0.8);
+	margin-left: 25px;
+	
+}
+.announce_table a{
+color:#404041;
+text-decoration: none;
+font-weight:bold;
+}
+.announce_table a:visited {
+    color: #000000;
+	text-decoration: underline;
+}
+.announce_table a:hover {
+    color: #000000;
+	text-decoration: underline;
+}
+
+/* selected link */
+.announce_table a:active {
+    color: #000000;
+	text-decoration: underline;
+} 
+.announce_table p{
+color:#54565A;
+margin-top: 0px;
+margin-bottom: 0px;
+}
+/**************/
+.banner_rightContent{margin-top: 30px; height: 360px;}
+.message{
+    padding: 10px; 
+    border: solid #cc3f3f 1px; 
+    color:#cc3f3f; 
+    width: 292px; 
+    text-align: center;
+    display: inline-block;
+    -webkit-border-radius: 6;
+    -moz-border-radius: 6;
+    border-radius: 6px;  
+}
+
+#login {width: 300px; margin: 0; padding: 0 0 0 260px;}
+#login h2 {
+    display: block;
+    text-align: center;
+}
+#login form {padding-top:4px;}
+#login input[type=text],input[type=password]{
+    font-size:12pt;
+    height: 24px;
+    width: 300px;
+    padding:6px;
+    margin-bottom:4px;
+    color: #65b2ff;
+    border:solid 1px #c6c6c6;
+    border-radius:6px;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    text-align: center;
+}
+
+#login input[type=submit]{
+    width: 314px;
+    color: #ffffff;
+    font-size: 12pt;
+    padding:10px;
+    border: solid #056ca8 1px;
+    text-decoration: none;
+    background: #3498db;
+    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+    background-image: -o-linear-gradient(top, #3498db, #2980b9);
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    -webkit-border-radius: 6;
+    -moz-border-radius: 6;
+    border-radius: 6px;   
+}
+#login form a {
+    text-decoration: none;
+    color:#3B5998;
+	   font-size: 11px;
+    margin-top: 10px;
+    display: block;
+    text-align: right;
+}
+#login input[type=submit]:hover {
+    background: #3cb0fd;
+    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    cursor: pointer;
+}
+
+
+#word-login {font-size: 10px; color:#adadad;}
+.title {margin-bottom: 10px;}
+.title_support {
+	font-size: 10pt;
+	float: right;
+	position: absolute;
+	margin: -10px 0 0 140px;
+	color: #fff;
+	background:#ad0000;
+	padding:6px 10px;
+	font-weight: bold;
+
+
+    -webkit-border-radius: 0 0 6px 6px;
+    -moz-border-radius:    0 0 6px 6px;
+	border-radius:         0 0 6px 6px;
+
+
+    -moz-box-shadow:     0px 5px 8px -4px #000;
+    -webkit-box-shadow:  0px 5px 8px -4px #000;
+	box-shadow:          0px 5px 8px -4px #000;
+	left: 1262px;
+	top: 30px;
+    
+}
+.logo {
+	height: 100px;
+	position: absolute;
+	z-index: 3;
+	margin-top:-100px;
+	width: 100%;
+	left: 2px;
+	top: 99px;
+}
+.logo h1{font-family: "Trebuchet MS", Helvetica, sans-serif; color: #fff; font-size: 20pt; font-weight: normal;padding-top: 14px;float: right;}
+.logo img{float: right; -padding 20px 20px; margin: 20px;}
+
+
+/*-----------Label Styling---------*/
+.label{
+	display:inline;
+	padding:.2em .6em .3em;
+	font-size:75%;
+	font-weight:bold;
+	line-height:1;
+	color:#ffffff;
+	text-align:center;
+	white-space:nowrap;
+	vertical-align:baseline;
+	border-radius:.25em
+}
+a.label:hover,a.label:focus{
+	color:#ffffff;
+	text-decoration:none;
+	cursor:pointer
+}
+.label:empty{
+	display:none
+}
+.btn .label{
+	position:relative;
+	top:-1px
+}
+.label-default{
+	background-color:#999999
+}
+.label-default[href]:hover,.label-default[href]:focus{
+	background-color:#808080
+}.label-primary{
+	background-color:#2fa4e7
+}
+.label-primary[href]:hover,.label-primary[href]:focus{
+	background-color:#178acc
+}
+.label-success{
+	background-color:#73a839
+}
+.label-success[href]:hover,.label-success[href]:focus{
+	background-color:#59822c
+}
+.label-info{
+	background-color:#033c73
+}
+.label-info[href]:hover,.label-info[href]:focus{
+	background-color:#022241
+}
+.label-warning{
+	background-color:#dd5600
+}
+.label-warning[href]:hover,.label-warning[href]:focus{
+	background-color:#aa4200
+}
+.label-danger{
+	background-color:#c71c22
+}
+.label-danger[href]:hover,.label-danger[href]:focus{
+	background-color:#9a161a
+}
+
+
+
+
+
+
+@media only screen and (max-device-width: 480px) {
+    .banner_right{width: 100%; margin: auto;}
+    .banner_rightContent{}
+    .title {background: rgba(255, 255, 255, 0.26);padding-left: 10px; margin: 40px 0px 40px 0px; }
+    .title img {max-width:300px; align-items: center;}
+    .banner_left{background: url(../images/postgrad-login.png) no-repeat center;}
+    #login input[type=text],input[type=password]{ width: 280px;}
+    #login input[type=submit]{ width: 294px;}
+    .logo h1 {font-size: 12pt;padding-top: 0px;}
+    .logo img {margin: 10px 10px;}
+    
+
+}

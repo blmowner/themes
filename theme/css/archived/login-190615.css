@@ -1,0 +1,88 @@
+
+body{margin: 100px 0px 0px 0px; font-family: Arial, Helvetica, sans-serif; background-color: #232728;}
+
+.white_stripe{position:absolute; z-index: 1; background: #fcfdfd; height: 359px;margin-top:23px; width: 100%;}
+.banner_left{position:absolute; z-index:2; background: url(../images/postgrad-login.png) no-repeat; height: 409px; width: 100%;}
+.banner_right{float: right; width: 60%;}
+.banner_rightContent{margin-top: 30px; height: 360px;}
+.message {padding: 10px; border: solid #cc3f3f 1px; color:#cc3f3f;}
+
+#login {width: 300px; margin: auto;}
+#login h2 {
+    display: block;
+    text-align: center;
+}
+#login form {margin: auto;}
+#login input[type=text],input[type=password]{
+    font-size:12pt;
+    height: 24px;
+    width: 300px;
+    padding:6px;
+    margin-bottom:4px;
+    color: #65b2ff;
+    border:solid 1px #c6c6c6;
+    border-radius:6px;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    text-align: center;
+}
+
+#login input[type=submit]{
+    width: 314px;
+    color: #ffffff;
+    font-size: 12pt;
+    padding:10px;
+    border: solid #056ca8 1px;
+    text-decoration: none;
+    background: #3498db;
+    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+    background-image: -o-linear-gradient(top, #3498db, #2980b9);
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    -webkit-border-radius: 6;
+    -moz-border-radius: 6;
+    border-radius: 6px;   
+}
+a {
+    text-decoration: none;
+    color:#3B5998;
+	font-size: 11px;
+}
+#login input[type=submit]:hover {
+    background: #3cb0fd;
+    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    cursor: pointer;
+}
+
+
+#word-login {font-size: 10px; color:#adadad;}
+
+.logo {height: 100px; position: absolute; z-index: 3;margin-top:-100px; width: 100%;}
+.logo h1{font-family: "Trebuchet MS", Helvetica, sans-serif; color: #fff; font-size: 20pt; font-weight: normal;padding-top: 14px;}
+.logo img{float: left; -padding 20px 20px; margin: 20px;}
+
+
+
+
+
+
+
+
+@media only screen and (max-device-width: 480px) {
+    .banner_right{width: 100%; margin: auto;}
+    .banner_rightContent{}
+    .title {background: rgba(255, 255, 255, 0.26);padding-left: 10px; margin: 40px 0px 40px 0px; }
+    .title img {max-width:300px; align-items: center;}
+    .banner_left{background: url(../images/postgrad-login.png) no-repeat center;}
+    #login input[type=text],input[type=password]{ width: 280px;}
+    #login input[type=submit]{ width: 294px;}
+    .logo h1 {font-size: 12pt;padding-top: 0px;}
+    .logo img {margin: 10px 10px;}
+    
+
+}

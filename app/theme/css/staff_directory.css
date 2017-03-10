@@ -1,0 +1,23 @@
+.dinr { 
+	background-image: url(../../theme/images/msu_building.jpg);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+#dinr_table table{
+	margin: auto;
+	padding-top: 360px;
+	
+	}
+#dinr_attnd{
+	font-family: "Arial Black", Gadget, sans-serif;
+	color: #666;
+}
+#dinr_attnd h3{
+	font-size: 12pt;
+	color: #666;
+}
+#dinr_attnd h5{
+	font-style: italic;
+}

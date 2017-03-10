@@ -1,0 +1,133 @@
+Date Time: 29-Oct-2015 09:54:43 AM
+Error no : 1054: Unknown column 'pub_detail_id' in 'where clause'
+Invalid SQL: SELECT * 
+FROM file_upload_publication
+WHERE (publication_id = '' 
+AND pub_detail_id = '')
+OR (publication_id = '' 
+AND pub_detail_id = '')
+AND uploaded_by = '012013110572'
+AND archived_status IS NULL
+Source: /app/application/publication/publication_attachment.php
+Triggered By: 012013110572
+
+Date Time: 29-Oct-2015 05:08:01 PM
+Error no : 1054: Unknown column 'pub_detail_id' in 'where clause'
+Invalid SQL: SELECT * 
+FROM file_upload_publication
+WHERE (publication_id = '' 
+AND pub_detail_id = '')
+OR (publication_id = '' 
+AND pub_detail_id = '')
+AND uploaded_by = '012013110572'
+AND archived_status IS NULL
+Source: /app/application/publication/publication_attachment.php
+Triggered By: 012013110572
+
+Date Time: 29-Oct-2015 05:14:59 PM
+Error no : 1054: Unknown column 'uploaded_by' in 'where clause'
+Invalid SQL: SELECT * 
+FROM file_upload_publication
+WHERE (publication_id = '')
+OR (publication_id = '')
+AND uploaded_by = '012013110572'
+AND archived_status IS NULL
+Source: /app/application/publication/publication_attachment.php
+Triggered By: 012013110572
+
+Date Time: 29-Oct-2015 05:17:26 PM
+Error no : 1054: Unknown column 'archived_status' in 'where clause'
+Invalid SQL: SELECT * 
+FROM file_upload_publication
+WHERE (publication_id = '')
+OR (publication_id = '')
+AND upload_by = '012013110572'
+AND archived_status IS NULL
+Source: /app/application/publication/publication_attachment.php
+Triggered By: 012013110572
+
+Date Time: 29-Oct-2015 05:19:17 PM
+Error no : 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+			VALUES (
+			'20151029001',
+			'viva suruh tukar 3.txt', 
+			'testt', 
+			't' at line 14
+Invalid SQL: INSERT INTO file_upload_publication (
+			fu_cd,  
+			fu_document_filename, 
+			fu_document_filedesc, 
+			fu_document_filetype, 
+			fu_document_filedata,
+			fu_document_thumbnail,
+			insert_by,
+			insert_date,
+			modify_by,
+			modify_date,
+			uploaded_by,
+			publication_id,
+			)
+			VALUES (
+			'20151029001',
+			'viva suruh tukar 3.txt', 
+			'testt', 
+			'text/plain',
+			'',
+			'',
+			'012013110572',
+			now(),
+			'012013110572',
+			now(),
+			'012013110572',
+			'')
+Source: /app/application/publication/new_public_upload.php
+Triggered By: 012013110572
+
+Date Time: 29-Oct-2015 05:23:48 PM
+Error no : 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+			VALUES (
+			'20151029001',
+			'viva1 after amend.docx', 
+			'test', 
+			'ap' at line 14
+Invalid SQL: INSERT INTO file_upload_publication (
+			fu_cd,  
+			fu_document_filename, 
+			fu_document_filedesc, 
+			fu_document_filetype, 
+			fu_document_filedata,
+			fu_document_thumbnail,
+			insert_by,
+			insert_date,
+			modify_by,
+			modify_date,
+			upload_by,
+			publication_id,
+			)
+			VALUES (
+			'20151029001',
+			'viva1 after amend.docx', 
+			'test', 
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'',
+			'',
+			'012013110572',
+			now(),
+			'012013110572',
+			now(),
+			'012013110572',
+			'')
+Source: /app/application/publication/new_public_upload.php
+Triggered By: 012013110572
+
+Date Time: 29-Oct-2015 05:27:27 PM
+Error no : 1054: Unknown column 'uploaded_by' in 'where clause'
+Invalid SQL: SELECT COUNT(*) as total  
+			FROM file_upload_publication
+			WHERE publication_id = '201510290001' 
+			/*AND pub_detail_id = '201510290001'*/
+			AND uploaded_by = '012013110572'
+			AND archived_status IS NULL
+Source: /app/application/publication/edit_publication.php
+Triggered By: 012013110572
+

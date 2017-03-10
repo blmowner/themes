@@ -1,0 +1,596 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+	<title>Online Help - Faculty- Table of Contents</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="HelpNDoc Personal Edition 4.7.1.684">
+	<link type="text/css" rel="stylesheet" media="all" href="css/reset.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/silver-theme/jquery-ui-1.8.12.custom.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/dynatree/chm/ui.dynatree.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/base.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/hnd.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="css/toc.css" />
+	<!--[if lte IE 8]>
+		<link type="text/css" rel="stylesheet" media="all" href="css/ielte8.css" />
+	<![endif]-->
+	<style type="text/css">
+		#tabs .ui-widget-header
+		{
+			background-color: #EFEFEF;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery.dynatree.min.js"></script>
+	<script type="text/javascript" src="js/hndjsse.js"></script>
+	<script type="text/javascript">
+	
+		window.bSearchDataLoaded = false;
+		var sHelpIdToActivate = '';
+	
+		$(document).ready(function()
+		{
+			var sAnchorName = '';
+			try { sAnchorName = top.location.href.substring(top.location.href.lastIndexOf("#") + 1, top.location.href.length); }
+			catch(err) { sAnchorName = ''; }
+			var nSelectedTab = 0;
+			if (sAnchorName == '_index') nSelectedTab = 1
+			else if (sAnchorName == '_search') nSelectedTab = 2;			
+			$("#tabs").tabs({
+				selected: nSelectedTab,
+				select: function(event, ui) { HideKwPopup(); }
+			});
+			
+			// Toc
+			if ($("#tab-toc").length) {
+				$("#tab-toc").dynatree({
+					clickFolderMode: 1,
+					debugLevel: 0,
+					imagePath: 'css/dynatree/chm/',
+					onActivate: function(node){
+						if ($("#tab-keywords").length && $("#tab-keywords").dynatree && $("#tab-keywords").dynatree("getTree") && $("#tab-keywords").dynatree("getTree").activateKey)
+							$("#tab-keywords").dynatree("getTree").activateKey(null);
+						if(node.data.href && node.data.href != '#'){
+							window.open(node.data.href, node.data.target);
+						}
+					}
+				});
+				// Expand all nodes if required
+				$("#tab-toc").dynatree("getRoot").visit(function(node){
+						node.expand(true);
+					});
+				// Select the active help id
+				if (sHelpIdToActivate != '') $("#tab-toc").dynatree("getTree").activateKey(sHelpIdToActivate);
+			}
+			
+			// Keywords
+			
+			if ($("#tab-keywords").length) {
+				$("#tab-keywords").dynatree({
+					clickFolderMode: 1,
+					debugLevel: 0,
+					imagePath: 'css/dynatree/chm/',
+					onClick: function(node, event){
+						HideKwPopup();
+						if (node.data && node.data.click)
+						{
+							var aRefList = null;
+							eval('aRefList=' + node.data.click);
+							if (ShowKwPopup(node.li, aRefList))
+							{
+								if ($("#tab-toc") && $("#tab-toc").dynatree && $("#tab-toc").dynatree("getTree") && $("#tab-toc").dynatree("getTree").activateKey)
+									$("#tab-toc").dynatree("getTree").activateKey(null);
+								if(node.data.href && node.data.href != '#'){
+									window.open(node.data.href, node.data.target);
+								}
+							}
+						}
+					}
+				});
+				// Expand all nodes if required
+				$("#tab-keywords").dynatree("getRoot").visit(function(node){
+						node.expand(true);
+					});
+				}
+			
+			// Load search data
+			(function() {
+				var se = document.createElement('script'); se.type = 'text/javascript'; se.async = true;
+				se.src = 'js/hndsd.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(se, s);
+			})();
+		});
+		
+		$('body').click(function() {
+			HideKwPopup();
+		});
+		
+		function SelectTocItem(sHelpId)
+		{
+			if ($("#tab-toc").length && $("#tab-toc").dynatree && $("#tab-toc").dynatree("getTree") && $("#tab-toc").dynatree("getTree").getNodeByKey) {
+				$("#tab-toc").dynatree("getTree").getNodeByKey(sHelpId).activateSilently();
+			}
+			else {
+				sHelpIdToActivate = sHelpId;
+			}
+		}
+		
+		function HideKwPopup()
+		{
+			if($("#popupMenu")) $("#popupMenu").remove();
+		}
+		
+		function ShowKwPopup(oSender, aLinks)
+		{
+			HideKwPopup();
+			if (!aLinks || !aLinks.length || aLinks.length == 0) return false
+			else if (aLinks.length == 1) return true
+			else
+			{
+				var oParentDiv = document.createElement("DIV");
+				oParentDiv.id = "popupMenu";
+				var oLink = null;
+				// Close button
+				oLink = document.createElement("SPAN");
+				oLink.className = "close-button";
+				oLink.innerHTML = "X";
+				oLink.href = "#";
+				oLink.onclick = HideKwPopup;
+				oParentDiv.appendChild(oLink);
+				// Items
+				for (var nCnt=0; nCnt<aLinks.length; nCnt++)
+				{
+					oLink = document.createElement("A");
+					oLink.innerHTML = aLinks[nCnt][0];
+					oLink.href = aLinks[nCnt][1];
+					oLink.target = "FrameMain";
+					oLink.onclick = HideKwPopup;
+					oParentDiv.appendChild(oLink);
+				}
+				document.body.appendChild(oParentDiv);
+				var pos = $(oSender).offset(); 
+				var height = $(oSender).height();
+				$(oParentDiv).css({
+					"left": (pos.left+20) + "px",
+					"top": (pos.top + height + 5) + "px"
+				});
+				$(oParentDiv).show();
+				return false;
+			}
+		}
+		
+		function PerformSearch()
+		{
+			if (!window.bSearchDataLoaded) {
+				$("#search_results").html("Search engine data hasn't been fully loaded yet or an error occurred while loading it. This usually happens when documentation is browsed locally.");
+				return;
+			}
+			sValue = $("#search_value").val();
+			$("#search_results").html('Searching...');
+			var oSearchEngine = new HndJsSe;
+			oSearchEngine.ParseInput(sValue);			
+			oSearchEngine.PerformSearch();
+			if (!oSearchEngine.aResults || !oSearchEngine.aResults.length)
+			{
+				$("#search_results").html('No results found.');
+			}
+			else
+			{
+				$("#search_results").html('<div id="search_results_content"></div>');
+				var oUl = $("#search_results_content").append("<ul id='lr'></ul>").find("ul");
+				for (var nCnt = 0; nCnt < oSearchEngine.aResults.length; nCnt++)
+				{
+					if (oSearchEngine.aResults[nCnt][0] < aTl.length)
+					{
+						oUl.append("<li><a href='" + aTl[oSearchEngine.aResults[nCnt][0]][0] + "?search=" + escape(sValue) + "' target='FrameMain'>" + unescape(aTl[oSearchEngine.aResults[nCnt][0]][1]) + "</a></li>");
+					}
+				}
+				// Tree
+				$("#search_results_content").dynatree({
+					clickFolderMode: 1,
+					debugLevel: 0,
+					imagePath: 'css/dynatree/chm/',
+					onActivate: function(node){
+						if ($("#search_results_content") && $("#search_results_content").dynatree && $("#search_results_content").dynatree("getTree") && $("#search_results_content").dynatree("getTree").activateKey)
+							$("#search_results_content").dynatree("getTree").activateKey(null);
+						if(node.data.href && node.data.href != '#'){
+							window.open(node.data.href, node.data.target);
+						}
+					}
+				});
+			}
+		}
+	</script>
+</head>
+
+<body>
+
+	<div id="tabs">
+		<ul>
+			<li><a href="#tab-toc">Contents</a></li>
+			<li><a href="#tab-keywords">Index</a></li>
+			<li><a href="#tab-search">Search</a></li>
+			</ul>
+		<div id="tab-toc">
+			<ul id="toc" class="">
+
+				<li class="folder" id="Introduction" data="">
+							<a
+							href="Introduction.html"
+							target="FrameMain">
+								Introduction</a>
+
+				<ul><li class="" id="Scope" data="">
+							<a
+							href="Scope.html"
+							target="FrameMain">
+								Scope</a>
+
+				</li><li class="" id="SystemRequirement" data="">
+							<a
+							href="SystemRequirement.html"
+							target="FrameMain">
+								System Requirement</a>
+
+				</li><li class="" id="ScreenDesign" data="">
+							<a
+							href="ScreenDesign.html"
+							target="FrameMain">
+								Screen Design</a>
+
+				</li></ul></li><li class="folder" id="HighLevelFlow" data="">
+							<a
+							href="HighLevelFlow.html"
+							target="FrameMain">
+								High Level Flow</a>
+
+				<ul><li class="" id="ThesisProposalSubmissionProcessF" data="">
+							<a
+							href="ThesisProposalSubmissionProcessF.html"
+							target="FrameMain">
+								Thesis Proposal Submission Process Flow</a>
+
+				</li></ul></li><li class="folder" id="GettingStartedFaculty" data="">
+							<a
+							href="GettingStartedFaculty.html"
+							target="FrameMain">
+								Getting Started - Faculty</a>
+
+				<ul><li class="folder" id="USERLOGINandLOGOUT" data="">
+							<a
+							href="USERLOGINandLOGOUT.html"
+							target="FrameMain">
+								USER LOGIN and LOGOUT</a>
+
+				<ul><li class="" id="Login" data="">
+							<a
+							href="Login.html"
+							target="FrameMain">
+								Login</a>
+
+				</li><li class="" id="Logout1" data="">
+							<a
+							href="Logout1.html"
+							target="FrameMain">
+								Logout</a>
+
+				</li></ul></li><li class="folder" id="ChangePassword" data="">
+							<a
+							href="ChangePassword.html"
+							target="FrameMain">
+								Change Password</a>
+
+				<ul><li class="" id="ChangePassword1" data="">
+							<a
+							href="ChangePassword1.html"
+							target="FrameMain">
+								Change Password</a>
+
+				</li></ul></li><li class="folder" id="ThesisView" data="">
+							<a
+							href="ThesisView.html"
+							target="FrameMain">
+								Thesis View</a>
+
+				<ul><li class="folder" id="SearchStudentviaThesisIDTitle" data="">
+							<a
+							href="SearchStudentviaThesisIDTitle.html"
+							target="FrameMain">
+								Search Student via Thesis ID/Title</a>
+
+				<ul><li class="" id="StudentProfileDetails" data="">
+							<a
+							href="StudentProfileDetails.html"
+							target="FrameMain">
+								Student Profile Details</a>
+
+				</li></ul></li><li class="folder" id="SearchStudentviaStudentNameMatri" data="">
+							<a
+							href="SearchStudentviaStudentNameMatri.html"
+							target="FrameMain">
+								Search Student via Student Name/Matrix No</a>
+
+				<ul><li class="" id="StudentProfileDetails1" data="">
+							<a
+							href="StudentProfileDetails1.html"
+							target="FrameMain">
+								Student Profile Details</a>
+
+				</li></ul></li></ul></li><li class="folder" id="ListofApprovedThesis" data="">
+							<a
+							href="ListofApprovedThesis.html"
+							target="FrameMain">
+								List of Approved Thesis</a>
+
+				<ul><li class="" id="ListofApprovedThesis1" data="">
+							<a
+							href="ListofApprovedThesis1.html"
+							target="FrameMain">
+								List of Approved Thesis</a>
+
+				</li><li class="" id="GeneratePDFFile" data="">
+							<a
+							href="GeneratePDFFile.html"
+							target="FrameMain">
+								Generate PDF File</a>
+
+				</li></ul></li><li class="folder" id="AdministrationView" data="">
+							<a
+							href="AdministrationView.html"
+							target="FrameMain">
+								Administration View</a>
+
+				<ul><li class="" id="ReviewerFeedbackApproval" data="">
+							<a
+							href="ReviewerFeedbackApproval.html"
+							target="FrameMain">
+								Reviewer Feedback Approval</a>
+
+				</li><li class="folder" id="ProposalConfirmationList" data="">
+							<a
+							href="ProposalConfirmationList.html"
+							target="FrameMain">
+								Proposal Confirmation List</a>
+
+				<ul><li class="folder" id="ManageProposalConfirmation" data="">
+							<a
+							href="ManageProposalConfirmation.html"
+							target="FrameMain">
+								Manage Proposal Confirmation</a>
+
+				<ul><li class="" id="Remark" data="">
+							<a
+							href="Remark.html"
+							target="FrameMain">
+								Remark</a>
+
+				</li><li class="" id="EditAttachmentDetail" data="">
+							<a
+							href="EditAttachmentDetail.html"
+							target="FrameMain">
+								Edit Attachment Detail</a>
+
+				</li><li class="" id="AssignSupervisorCoSupervisor" data="">
+							<a
+							href="AssignSupervisorCoSupervisor.html"
+							target="FrameMain">
+								Assign Supervisor/Co-Supervisor</a>
+
+				</li><li class="" id="ViewAssignedSupervisorCoSupervis" data="">
+							<a
+							href="ViewAssignedSupervisorCoSupervis.html"
+							target="FrameMain">
+								View Assigned Supervisor/Co-Supervisor</a>
+
+				</li><li class="" id="ChangeAssignSupervisorCoSupervis" data="">
+							<a
+							href="ChangeAssignSupervisorCoSupervis.html"
+							target="FrameMain">
+								Change Assign Supervisor/Co-Supervisor</a>
+
+				</li><li class="" id="AssignReviewer" data="">
+							<a
+							href="AssignReviewer.html"
+							target="FrameMain">
+								Assign Reviewer</a>
+
+				</li><li class="" id="ViewAssignedReviewer" data="">
+							<a
+							href="ViewAssignedReviewer.html"
+							target="FrameMain">
+								View Assigned Reviewer</a>
+
+				</li><li class="" id="ChangeAssignReviewer" data="">
+							<a
+							href="ChangeAssignReviewer.html"
+							target="FrameMain">
+								Change Assign Reviewer</a>
+
+				</li></ul></li></ul></li><li class="folder" id="ProposalCancellation" data="">
+							<a
+							href="ProposalCancellation.html"
+							target="FrameMain">
+								Proposal Cancellation</a>
+
+				<ul><li class="" id="EnterRemarkCancellation" data="">
+							<a
+							href="EnterRemarkCancellation.html"
+							target="FrameMain">
+								Enter Remark Cancellation</a>
+
+				</li></ul></li><li class="folder" id="AssignSupervisor" data="">
+							<a
+							href="AssignSupervisor.html"
+							target="FrameMain">
+								Assign Supervisor</a>
+
+				<ul><li class="" id="AssignSupervisorCoSupervisor1" data="">
+							<a
+							href="AssignSupervisorCoSupervisor1.html"
+							target="FrameMain">
+								Assign Supervisor/Co-Supervisor</a>
+
+				</li><li class="" id="ViewAssignedSupervisorCoSupervi1" data="">
+							<a
+							href="ViewAssignedSupervisorCoSupervi1.html"
+							target="FrameMain">
+								View Assigned Supervisor/Co-Supervisor</a>
+
+				</li><li class="" id="ChangeAssignSupervisorCoSupervi1" data="">
+							<a
+							href="ChangeAssignSupervisorCoSupervi1.html"
+							target="FrameMain">
+								Change Assign Supervisor/Co-Supervisor</a>
+
+				</li></ul></li><li class="folder" id="AssignReviewer1" data="">
+							<a
+							href="AssignReviewer1.html"
+							target="FrameMain">
+								Assign Reviewer</a>
+
+				<ul><li class="" id="AssignReviewer2" data="">
+							<a
+							href="AssignReviewer2.html"
+							target="FrameMain">
+								Assign Reviewer</a>
+
+				</li><li class="" id="ViewAssignedReviewer1" data="">
+							<a
+							href="ViewAssignedReviewer1.html"
+							target="FrameMain">
+								View Assigned Reviewer</a>
+
+				</li><li class="" id="ChangeAssignReviewer1" data="">
+							<a
+							href="ChangeAssignReviewer1.html"
+							target="FrameMain">
+								Change Assign Reviewer</a>
+
+				</li></ul></li><li class="folder" id="ListofThesisProposalDisapprovedt" data="">
+							<a
+							href="ListofThesisProposalDisapprovedt.html"
+							target="FrameMain">
+								List of Thesis Proposal - Disapproved thesis by Senate</a>
+
+				<ul><li class="" id="GenerateFile" data="">
+							<a
+							href="GenerateFile.html"
+							target="FrameMain">
+								Generate File</a>
+
+				</li></ul></li></ul></li><li class="folder" id="Message" data="">
+							<a
+							href="Message.html"
+							target="FrameMain">
+								Message</a>
+
+				<ul><li class="folder" id="Inbox" data="">
+							<a
+							href="Inbox.html"
+							target="FrameMain">
+								Inbox</a>
+
+				<ul><li class="" id="ViewMessage" data="">
+							<a
+							href="ViewMessage.html"
+							target="FrameMain">
+								View Message</a>
+
+				</li></ul></li><li class="folder" id="NewMessage" data="">
+							<a
+							href="NewMessage.html"
+							target="FrameMain">
+								New Message</a>
+
+				<ul><li class="" id="SelectRecipient" data="">
+							<a
+							href="SelectRecipient.html"
+							target="FrameMain">
+								Select Recipient</a>
+
+				</li><li class="" id="UploadAttachment" data="">
+							<a
+							href="UploadAttachment.html"
+							target="FrameMain">
+								Upload Attachment</a>
+
+				</li></ul></li><li class="folder" id="Sent" data="">
+							<a
+							href="Sent.html"
+							target="FrameMain">
+								Sent</a>
+
+				<ul><li class="" id="ReadMessage" data="">
+							<a
+							href="ReadMessage.html"
+							target="FrameMain">
+								Read Message</a>
+
+				</li></ul></li></ul></li><li class="folder" id="Help" data="">
+							<a
+							href="Help.html"
+							target="FrameMain">
+								Help</a>
+
+				<ul><li class="" id="OnlineHelpFaculty" data="">
+							<a
+							href="OnlineHelpFaculty.html"
+							target="FrameMain">
+								Online Help - Faculty</a>
+
+				</li><li class="" id="UserManual" data="">
+							<a
+							href="UserManual.html"
+							target="FrameMain">
+								User Manual</a>
+
+				</li><li class="" id="FAQ" data="">
+							<a
+							href="FAQ.html"
+							target="FrameMain">
+								FAQ</a>
+
+				</li></ul></li><li class="folder" id="EmailTemplate" data="">
+							<a
+							href="EmailTemplate.html"
+							target="FrameMain">
+								Email Template</a>
+
+				<ul><li class="" id="ThesisProposalRequestChanges" data="">
+							<a
+							href="ThesisProposalRequestChanges.html"
+							target="FrameMain">
+								Thesis Proposal - Request Changes</a>
+
+				</li><li class="" id="ThesisProposalDisapproved" data="">
+							<a
+							href="ThesisProposalDisapproved.html"
+							target="FrameMain">
+								Thesis Proposal - Disapproved</a>
+
+				</li></ul></li></ul></li></ul>
+		</div>
+		
+		<div id="tab-keywords">
+			<ul id="keywords">
+
+				</ul>
+		</div>
+		
+		<div id="tab-search">
+			<form onsubmit="PerformSearch(); return false;">
+				<label for="search_value">Search:</label>
+				<input id="search_value" name="search_value"></input>
+				<input type="submit" value="Search"/>
+			</form>
+			<div id="search_results"></div>
+		</div>
+		
+		</div>
+    
+</body>
+
+</html>
+
